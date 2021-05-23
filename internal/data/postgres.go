@@ -4,11 +4,15 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"io/ioutil"
+	"os"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func getConnection() (*sql.DB, error) {
-	//uri := os.Getenv("DATABASE_URI")
-	return sql.Open("postgres", "postgres://lucas_piegas:1234@127.0.0.1:5432/go_store?sslmode=disable")
+	uri := os.Getenv("DATABASE_POSTGRES_URI")
+	driverName := os.Getenv("DATABASE_DRIVER")
+	return sql.Open(driverName, uri)
 }
 
 func MakeMigration(db *sql.DB) error {

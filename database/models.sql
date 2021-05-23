@@ -115,8 +115,8 @@ CREATE TABLE IF NOT EXISTS items (
 );
 
 alter table items drop constraint if exists fk_items_warehouses;
-alter table items add CONSTRAINT fk_items_warehouses FOREIGN KEY(warehouse_id) REFERENCES warehouses(id);
 alter table items drop constraint if exists fk_items_deliveries;
+alter table items add CONSTRAINT fk_items_warehouses FOREIGN KEY(warehouse_id) REFERENCES warehouses(id);
 alter table items add CONSTRAINT fk_items_deliveries FOREIGN KEY(delivery_id) REFERENCES deliveries(id);
 
 alter table trucks drop constraint if exists fk_trucks_employees;
@@ -126,8 +126,8 @@ alter table employees drop constraint if exists fk_employees_roles;
 alter table employees add constraint fk_employees_roles foreign key(role_id) references roles(id);
 
 alter table invoice_lines drop constraint if exists fk_invoices_lines_items;
-alter table invoice_lines add constraint fk_invoices_lines_items foreign key(item_id) references items(id);
 alter table invoice_lines drop constraint if exists fk_invoices_lines_invoices;
+alter table invoice_lines add constraint fk_invoices_lines_items foreign key(item_id) references items(id);
 alter table invoice_lines add constraint fk_invoices_lines_invoices foreign key(invoice_id) references invoices(id);
 
 alter table invoices drop constraint if exists fk_invoices_payments;
@@ -137,3 +137,8 @@ alter table invoices add constraint fk_invoices_clients foreign key(client_id) r
 
 alter table clients drop constraint if exists fk_clients_accounts;
 alter table clients add constraint fk_clients_accounts foreign key(account_id) references accounts(id);
+
+/*
+alter table accounts drop constraint if exists fk_accounts_clients;
+alter table accounts add constraint fk_accounts_clients foreign key(client_id) references clients(id)
+ */

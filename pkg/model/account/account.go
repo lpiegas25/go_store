@@ -7,9 +7,9 @@ import (
 )
 
 type Account struct {
-	ID uint `json:"id"`
-	ActualAmount float64 `json:"actual_amount"`
-	PreviousAmount float64 `json:"previous_amount"`
+	ID uint `json:"id,omitempty"`
+	ActualAmount float64 `json:"actual_amount,omitempty"`
+	PreviousAmount float64 `json:"previous_amount,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }

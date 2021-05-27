@@ -114,5 +114,7 @@ func (cr *ClientRouter) Routes() http.Handler {
 	r.Put("/{id}", cr.UpdateHandler)
 	r.Delete("/{id}", cr.DeleteHandler)
 
+
+
 	return r
 }

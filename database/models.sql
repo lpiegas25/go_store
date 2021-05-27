@@ -63,6 +63,7 @@ create table if not exists accounts (
 create table if not exists roles (
     id serial not null,
     name text not null,
+    description text,
     created_at timestamp DEFAULT now(),
     updated_at timestamp NOT NULL,
     constraint pk_roles primary key(id),

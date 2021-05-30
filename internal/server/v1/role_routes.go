@@ -111,6 +111,7 @@ func (rr *RoleRouter) Routes() http.Handler {
 	r.Get("/{id}", rr.GetOneHandler)
 	r.Put("/{id}", rr.UpdateHandler)
 	r.Delete("/{id}", rr.DeleteHandler)
+	r.Get("/", rr.GetAllHandler)
 
 	return r
 }

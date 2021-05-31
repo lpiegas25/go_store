@@ -14,14 +14,6 @@ type Role struct {
 	UpdatedAt   time.Time `json:"updated_at,omitempty"`
 }
 
-type Repository interface {
-	GetAll(ctx context.Context) ([]Role, error)
-	GetOne(ctx context.Context, id uint) (Role, error)
-	Create(ctx context.Context, role *Role) error
-	Update(ctx context.Context, id uint, role Role) error
-	Delete(ctx context.Context, id uint) error
-}
-
 type RoleRepository struct {
 	Data *data.Data
 }

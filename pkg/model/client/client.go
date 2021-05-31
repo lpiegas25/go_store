@@ -19,14 +19,6 @@ type Client struct {
 	AccountId    uint      `json:"account_id,omitempty"`
 }
 
-type Repository interface {
-	GetAll(ctx context.Context) ([]Client, error)
-	GetOne(ctx context.Context, id uint) (Client, error)
-	Create(ctx context.Context, client *Client) error
-	Update(ctx context.Context, id uint, client Client) error
-	Delete(ctx context.Context, id uint) error
-}
-
 type ClientRepository struct {
 	Data *data.Data
 }
@@ -34,7 +26,7 @@ type ClientRepository struct {
 func (cr ClientRepository) GetAll(ctx context.Context) ([]Client, error) {
 	q := `SELECT id, account_id, name, lastname, primary_phone, second_phone, address, email, created_at, updated_at
         FROM clients`
-	rows, err := cr.Data.DB.QueryContext(ctx,q)
+	rows, err := cr.Data.DB.QueryContext(ctx, q)
 	if err != nil {
 		return nil, err
 	}

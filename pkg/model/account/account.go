@@ -7,19 +7,11 @@ import (
 )
 
 type Account struct {
-	ID uint `json:"id,omitempty"`
-	ActualAmount float64 `json:"actual_amount,omitempty"`
-	PreviousAmount float64 `json:"previous_amount,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-}
-
-
-type Repository interface {
-	GetOne(ctx context.Context, id uint) (Account, error)
-	Create(ctx context.Context, account *Account) error
-	Update(ctx context.Context, id uint, account Account) error
-	Delete(ctx context.Context, id uint) error
+	ID             uint      `json:"id,omitempty"`
+	ActualAmount   float64   `json:"actual_amount,omitempty"`
+	PreviousAmount float64   `json:"previous_amount,omitempty"`
+	CreatedAt      time.Time `json:"created_at,omitempty"`
+	UpdatedAt      time.Time `json:"updated_at,omitempty"`
 }
 
 type AccountRepository struct {
@@ -46,7 +38,7 @@ func (a AccountRepository) Create(ctx context.Context, ac *Account) error {
 		VALUES ($1, $2, $3, $4)
 		RETURNING id`
 
-	stmt, err := a.Data.DB.PrepareContext(ctx,q)
+	stmt, err := a.Data.DB.PrepareContext(ctx, q)
 	if err != nil {
 		return err
 	}

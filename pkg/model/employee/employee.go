@@ -16,14 +16,6 @@ type Employee struct {
 	RoleId    uint      `json:"role_id,omitempty"`
 }
 
-type Repository interface {
-	GetAll(ctx context.Context) ([]Employee, error)
-	GetOne(ctx context.Context, id uint) (Employee, error)
-	Create(ctx context.Context, employee *Employee) error
-	Update(ctx context.Context, id uint, employee Employee) error
-	Delete(ctx context.Context, id uint) error
-}
-
 type EmployeeRepository struct {
 	Data *data.Data
 }

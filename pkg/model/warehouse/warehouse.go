@@ -13,14 +13,6 @@ type Warehouse struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-type Repository interface {
-	GetAll(ctx context.Context) ([]Warehouse, error)
-	GetOne(ctx context.Context, id uint) (Warehouse, error)
-	Create(ctx context.Context, wh *Warehouse) error
-	Update(ctx context.Context, id uint, wh Warehouse) error
-	Delete(ctx context.Context, id uint) error
-}
-
 type WarehouseRepository struct {
 	Data *data.Data
 }

@@ -128,7 +128,19 @@ create table if not exists items_deliveries (
     item_id int not null,
     delivery_id int not null,
     item_quantity numeric(18,3) not null,
+    created_at timestamp DEFAULT now(),
+    updated_at timestamp NOT NULL,
     constraint pk_items_deliveries primary key(id)
+);
+
+create table if not exists items_warehouses (
+    id serial not null,
+    item_id int not null,
+    warehouse_id int not null,
+    item_quantity numeric(18,3) not null,
+    created_at timestamp DEFAULT now(),
+    updated_at timestamp NOT NULL,
+    constraint pk_items_warehouses primary key(id)
 );
 
 alter table items drop constraint if exists fk_items_warehouses;
@@ -161,6 +173,11 @@ alter table items_deliveries drop constraint if exists fk_items_deliveries_items
 alter table items_deliveries drop constraint if exists fk_items_deliveries_deliveries;
 alter table items_deliveries add constraint fk_items_deliveries_items foreign key(item_id) references items(id);
 alter table items_deliveries add constraint fk_items_deliveries_deliveries foreign key(delivery_id) references deliveries(id);
+
+alter table items_warehouses drop constraint if exists fk_items_warehouses_items;
+alter table items_warehouses drop constraint if exists fk_items_warehouses_warehouses;
+alter table items_warehouses add constraint fk_items_warehouses_items foreign key(item_id) references items(id);
+alter table items_warehouses add constraint fk_items_warehouses_warehouses foreign key(warehouse_id) references warehouses(id);
 
 /*
 alter table accounts drop constraint if exists fk_accounts_clients;

@@ -15,7 +15,7 @@ type ClientRouter struct {
 	Repository client.Repository
 }
 
-func (cr *ClientRouter) GetAllHandler(w http.ResponseWriter, r *http.Request)  {
+func (cr *ClientRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	clients, err := cr.Repository.GetAll(ctx)
@@ -44,7 +44,7 @@ func (cr *ClientRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"client": ac})
 }
 
-func (cr *ClientRouter) CreateHandler(w http.ResponseWriter, r *http.Request)  {
+func (cr *ClientRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var c client.Client
 	err := json.NewDecoder(r.Body).Decode(&c)
 	if err != nil {
@@ -113,8 +113,6 @@ func (cr *ClientRouter) Routes() http.Handler {
 	r.Get("/", cr.GetAllHandler)
 	r.Put("/{id}", cr.UpdateHandler)
 	r.Delete("/{id}", cr.DeleteHandler)
-
-
 
 	return r
 }

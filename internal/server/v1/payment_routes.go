@@ -7,44 +7,44 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/lpiegas25/go_store/pkg/model/employee"
+	"github.com/lpiegas25/go_store/pkg/model/payment"
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type EmployeeRouter struct {
-	Repository *employee.Repository
+type PaymentRouter struct {
+	Repository *payment.Repository
 }
 
-func (er *EmployeeRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	employees, err := er.Repository.GetAll(ctx)
+	payments, err := pr.Repository.GetAll(ctx)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
-	response.JSON(w, r, http.StatusOK, response.Map{"employees": employees})
+	response.JSON(w, r, http.StatusOK, response.Map{"payments": payments})
 }
 
-func (er *EmployeeRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	var e employee.Employee
-	err := json.NewDecoder(r.Body).Decode(&e)
+func (pr *PaymentRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
+	var payment payment.Payment
+	err := json.NewDecoder(r.Body).Decode(&payment)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 	ctx := r.Context()
-	err = er.Repository.Create(ctx, &e)
+	err = pr.Repository.Create(ctx, &payment)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), e.ID))
-	response.JSON(w, r, http.StatusCreated, response.Map{"employee": e})
+	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), payment.ID))
+	response.JSON(w, r, http.StatusCreated, response.Map{"payment": payment})
 }
 
-func (er *EmployeeRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -53,16 +53,16 @@ func (er *EmployeeRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	ctx := r.Context()
-	e, err := er.Repository.GetOne(ctx, uint(id))
+	payment, err := pr.Repository.GetOne(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
 
-	response.JSON(w, r, http.StatusOK, response.Map{"employee": e})
+	response.JSON(w, r, http.StatusOK, response.Map{"payment": payment})
 }
 
-func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -70,8 +70,8 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	var e employee.Employee
-	err = json.NewDecoder(r.Body).Decode(&e)
+	var payment payment.Payment
+	err = json.NewDecoder(r.Body).Decode(&payment)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
@@ -79,7 +79,7 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	err = er.Repository.Update(ctx, uint(id), e)
+	err = pr.Repository.Update(ctx, uint(id), payment)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -87,7 +87,7 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -97,7 +97,7 @@ func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	ctx := r.Context()
-	err = er.Repository.Delete(ctx, uint(id))
+	err = pr.Repository.Delete(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -105,14 +105,14 @@ func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) 
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (er *EmployeeRouter) Routes() http.Handler {
+func (pr *PaymentRouter) Routes() http.Handler {
 	r := chi.NewRouter()
 
-	r.Post("/", er.CreateHandler)
-	r.Get("/{id}", er.GetOneHandler)
-	r.Get("/", er.GetAllHandler)
-	r.Put("/{id}", er.UpdateHandler)
-	r.Delete("/{id}", er.DeleteHandler)
+	r.Post("/", pr.CreateHandler)
+	r.Get("/{id}", pr.GetOneHandler)
+	r.Put("/{id}", pr.UpdateHandler)
+	r.Delete("/{id}", pr.DeleteHandler)
+	r.Get("/", pr.GetAllHandler)
 
 	return r
 }

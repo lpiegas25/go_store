@@ -2,8 +2,9 @@ package employee
 
 import (
 	"context"
-	"github.com/lpiegas25/go_store/internal/data"
 	"time"
+
+	"github.com/lpiegas25/go_store/internal/data"
 )
 
 type Employee struct {
@@ -16,11 +17,11 @@ type Employee struct {
 	RoleId    uint      `json:"role_id,omitempty"`
 }
 
-type EmployeeRepository struct {
+type Repository struct {
 	Data *data.Data
 }
 
-func (er EmployeeRepository) GetAll(ctx context.Context) ([]Employee, error) {
+func (er Repository) GetAll(ctx context.Context) ([]Employee, error) {
 	q := `SELECT id, role_id, name, lastname, phone, created_at, updated_at
         FROM employees`
 	rows, err := er.Data.DB.QueryContext(ctx, q)
@@ -38,7 +39,7 @@ func (er EmployeeRepository) GetAll(ctx context.Context) ([]Employee, error) {
 	return employees, nil
 }
 
-func (er EmployeeRepository) GetOne(ctx context.Context, id uint) (Employee, error) {
+func (er Repository) GetOne(ctx context.Context, id uint) (Employee, error) {
 
 	q := `SELECT id, role_id, name, lastname, phone, created_at, updated_at
         FROM employees
@@ -54,7 +55,7 @@ func (er EmployeeRepository) GetOne(ctx context.Context, id uint) (Employee, err
 	return e, nil
 }
 
-func (er EmployeeRepository) Create(ctx context.Context, e *Employee) error {
+func (er Repository) Create(ctx context.Context, e *Employee) error {
 	q := `INSERT INTO employees (role_id, name, lastname, phone, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id`
@@ -73,7 +74,7 @@ func (er EmployeeRepository) Create(ctx context.Context, e *Employee) error {
 	return nil
 }
 
-func (er EmployeeRepository) Update(ctx context.Context, id uint, e Employee) error {
+func (er Repository) Update(ctx context.Context, id uint, e Employee) error {
 	q := `UPDATE employees set role_id=$1, name=$2, lastname=$3, phone=$4, updated_at=$5
 			WHERE id=$6`
 	stmt, err := er.Data.DB.PrepareContext(ctx, q)
@@ -91,7 +92,7 @@ func (er EmployeeRepository) Update(ctx context.Context, id uint, e Employee) er
 	return nil
 }
 
-func (er EmployeeRepository) Delete(ctx context.Context, id uint) error {
+func (er Repository) Delete(ctx context.Context, id uint) error {
 	q := `DELETE FROM employees WHERE id=$1;`
 
 	stmt, err := er.Data.DB.PrepareContext(ctx, q)

@@ -3,15 +3,16 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/go-chi/chi"
 	"github.com/lpiegas25/go_store/pkg/model/role"
 	"github.com/lpiegas25/go_store/pkg/response"
-	"net/http"
-	"strconv"
 )
 
 type RoleRouter struct {
-	Repository role.Repository
+	Repository *role.Repository
 }
 
 func (rr *RoleRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {

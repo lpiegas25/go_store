@@ -2,8 +2,9 @@ package role
 
 import (
 	"context"
-	"github.com/lpiegas25/go_store/internal/data"
 	"time"
+
+	"github.com/lpiegas25/go_store/internal/data"
 )
 
 type Role struct {
@@ -14,11 +15,11 @@ type Role struct {
 	UpdatedAt   time.Time `json:"updated_at,omitempty"`
 }
 
-type RoleRepository struct {
+type Repository struct {
 	Data *data.Data
 }
 
-func (rr RoleRepository) GetAll(ctx context.Context) ([]Role, error) {
+func (rr Repository) GetAll(ctx context.Context) ([]Role, error) {
 	q := `SELECT id, name, description, created_at, updated_at
         FROM roles`
 	rows, err := rr.Data.DB.QueryContext(ctx, q)
@@ -36,7 +37,7 @@ func (rr RoleRepository) GetAll(ctx context.Context) ([]Role, error) {
 	return roles, nil
 }
 
-func (rr RoleRepository) GetOne(ctx context.Context, id uint) (Role, error) {
+func (rr Repository) GetOne(ctx context.Context, id uint) (Role, error) {
 	q := `SELECT id, name, description, created_at, updated_at
         FROM roles
 		WHERE id=$1; 
@@ -51,7 +52,7 @@ func (rr RoleRepository) GetOne(ctx context.Context, id uint) (Role, error) {
 	return role, nil
 }
 
-func (rr RoleRepository) Create(ctx context.Context, role *Role) error {
+func (rr Repository) Create(ctx context.Context, role *Role) error {
 	q := `INSERT INTO roles (name, description, created_at, updated_at)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id`
@@ -70,7 +71,7 @@ func (rr RoleRepository) Create(ctx context.Context, role *Role) error {
 	return nil
 }
 
-func (rr RoleRepository) Update(ctx context.Context, id uint, role Role) error {
+func (rr Repository) Update(ctx context.Context, id uint, role Role) error {
 	q := `UPDATE roles set name=$1, description=$2, updated_at=$3
 			WHERE id=$4`
 	stmt, err := rr.Data.DB.PrepareContext(ctx, q)
@@ -88,7 +89,7 @@ func (rr RoleRepository) Update(ctx context.Context, id uint, role Role) error {
 	return nil
 }
 
-func (rr RoleRepository) Delete(ctx context.Context, id uint) error {
+func (rr Repository) Delete(ctx context.Context, id uint) error {
 	q := `DELETE FROM roles WHERE id=$1;`
 
 	stmt, err := rr.Data.DB.PrepareContext(ctx, q)

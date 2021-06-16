@@ -3,15 +3,16 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/go-chi/chi"
 	"github.com/lpiegas25/go_store/pkg/model/warehouse"
 	"github.com/lpiegas25/go_store/pkg/response"
-	"net/http"
-	"strconv"
 )
 
 type WarehouseRouter struct {
-	Repository warehouse.Repository
+	Repository *warehouse.Repository
 }
 
 func (wr *WarehouseRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {

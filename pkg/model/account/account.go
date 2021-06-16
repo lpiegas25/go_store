@@ -2,8 +2,9 @@ package account
 
 import (
 	"context"
-	"github.com/lpiegas25/go_store/internal/data"
 	"time"
+
+	"github.com/lpiegas25/go_store/internal/data"
 )
 
 type Account struct {
@@ -14,11 +15,11 @@ type Account struct {
 	UpdatedAt      time.Time `json:"updated_at,omitempty"`
 }
 
-type AccountRepository struct {
+type Repository struct {
 	Data *data.Data
 }
 
-func (a AccountRepository) GetOne(ctx context.Context, id uint) (Account, error) {
+func (a Repository) GetOne(ctx context.Context, id uint) (Account, error) {
 	q := `SELECT id, actual_amount, previous_amount, created_at, updated_at
         FROM accounts
 		WHERE id=$1; 
@@ -33,7 +34,7 @@ func (a AccountRepository) GetOne(ctx context.Context, id uint) (Account, error)
 	return ac, nil
 }
 
-func (a AccountRepository) Create(ctx context.Context, ac *Account) error {
+func (a Repository) Create(ctx context.Context, ac *Account) error {
 	q := `INSERT INTO accounts (actual_amount, previous_amount, created_at, updated_at)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id`
@@ -52,7 +53,7 @@ func (a AccountRepository) Create(ctx context.Context, ac *Account) error {
 	return nil
 }
 
-func (a AccountRepository) Update(ctx context.Context, id uint, ac Account) error {
+func (a Repository) Update(ctx context.Context, id uint, ac Account) error {
 	q := `UPDATE accounts set actual_amount=$1, previous_amount=actual_amount, updated_at=$2
 			WHERE id=$3`
 	stmt, err := a.Data.DB.PrepareContext(ctx, q)
@@ -70,7 +71,7 @@ func (a AccountRepository) Update(ctx context.Context, id uint, ac Account) erro
 	return nil
 }
 
-func (a AccountRepository) Delete(ctx context.Context, id uint) error {
+func (a Repository) Delete(ctx context.Context, id uint) error {
 	q := `DELETE FROM accounts WHERE id=$1;`
 
 	stmt, err := a.Data.DB.PrepareContext(ctx, q)

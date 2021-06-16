@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "go_store_db",
+            "database": "go_store",
+            "username": "lucas_piegas",
+            "password": "1234"
+        }
+    ]
+}

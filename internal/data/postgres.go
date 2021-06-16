@@ -2,9 +2,10 @@ package data
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
 	"io/ioutil"
 	"os"
+
+	_ "github.com/lib/pq"
 
 	_ "github.com/joho/godotenv/autoload"
 )

@@ -3,16 +3,18 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-chi/chi"
 	"strconv"
+
+	"github.com/go-chi/chi"
+
+	"net/http"
 
 	"github.com/lpiegas25/go_store/pkg/model/client"
 	"github.com/lpiegas25/go_store/pkg/response"
-	"net/http"
 )
 
 type ClientRouter struct {
-	Repository client.Repository
+	Repository *client.Repository
 }
 
 func (cr *ClientRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {

@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { RoleForm } from './components/roles/RoleForm';
+import {Hello} from './components/Hello'
 
 ReactDOM.render(
-    <RoleForm />,
+  <Hello />,
   document.getElementById('root')
 );
-

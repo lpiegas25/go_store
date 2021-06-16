@@ -3,15 +3,16 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/go-chi/chi"
 	"github.com/lpiegas25/go_store/pkg/model/account"
 	"github.com/lpiegas25/go_store/pkg/response"
-	"net/http"
-	"strconv"
 )
 
 type AccountRouter struct {
-	Repository account.Repository
+	Repository *account.Repository
 }
 
 func (ar *AccountRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +76,7 @@ func (ar *AccountRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (ar *AccountRouter) DeleteHandler(w http.ResponseWriter, r *http.Request)  {
+func (ar *AccountRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)

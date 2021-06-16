@@ -2,8 +2,9 @@ package client
 
 import (
 	"context"
-	"github.com/lpiegas25/go_store/internal/data"
 	"time"
+
+	"github.com/lpiegas25/go_store/internal/data"
 )
 
 type Client struct {
@@ -19,11 +20,11 @@ type Client struct {
 	AccountId    uint      `json:"account_id,omitempty"`
 }
 
-type ClientRepository struct {
+type Repository struct {
 	Data *data.Data
 }
 
-func (cr ClientRepository) GetAll(ctx context.Context) ([]Client, error) {
+func (cr Repository) GetAll(ctx context.Context) ([]Client, error) {
 	q := `SELECT id, account_id, name, lastname, primary_phone, second_phone, address, email, created_at, updated_at
         FROM clients`
 	rows, err := cr.Data.DB.QueryContext(ctx, q)
@@ -41,7 +42,7 @@ func (cr ClientRepository) GetAll(ctx context.Context) ([]Client, error) {
 	return clients, nil
 }
 
-func (cr ClientRepository) GetOne(ctx context.Context, id uint) (Client, error) {
+func (cr Repository) GetOne(ctx context.Context, id uint) (Client, error) {
 
 	q := `SELECT id, account_id, name, lastname, primary_phone, second_phone, address, email, created_at, updated_at
         FROM clients
@@ -57,7 +58,7 @@ func (cr ClientRepository) GetOne(ctx context.Context, id uint) (Client, error) 
 	return c, nil
 }
 
-func (cr ClientRepository) Create(ctx context.Context, c *Client) error {
+func (cr Repository) Create(ctx context.Context, c *Client) error {
 	q := `INSERT INTO clients (account_id, name, lastname, primary_phone, second_phone, address, email, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING id`
@@ -76,7 +77,7 @@ func (cr ClientRepository) Create(ctx context.Context, c *Client) error {
 	return nil
 }
 
-func (cr ClientRepository) Update(ctx context.Context, id uint, c Client) error {
+func (cr Repository) Update(ctx context.Context, id uint, c Client) error {
 	q := `UPDATE clients set account_id=$1, name=$2, lastname=$3, primary_phone=$4, second_phone=$5, address=$6, email=$7, updated_at=$8
 			WHERE id=$9`
 	stmt, err := cr.Data.DB.PrepareContext(ctx, q)
@@ -94,7 +95,7 @@ func (cr ClientRepository) Update(ctx context.Context, id uint, c Client) error 
 	return nil
 }
 
-func (cr ClientRepository) Delete(ctx context.Context, id uint) error {
+func (cr Repository) Delete(ctx context.Context, id uint) error {
 	q := `DELETE FROM clients WHERE id=$1;`
 
 	stmt, err := cr.Data.DB.PrepareContext(ctx, q)

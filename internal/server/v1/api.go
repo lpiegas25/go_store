@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/lpiegas25/go_store/pkg/model/delivery"
 	"github.com/lpiegas25/go_store/pkg/model/invoice"
 	"net/http"
 
@@ -31,6 +32,7 @@ func New() http.Handler {
 	pr := &PaymentController{Repository: &payment.Repository{Data: data.New()}}
 	tr := &TruckController{Repository: &truck.Repository{Data: data.New()}}
 	ic := &InvoiceController{Repository: &invoice.Repository{Data: data.New()}}
+	dc := &DeliveryController{Repository: &delivery.Repository{Data: data.New()}}
 
 	r.Mount("/accounts", ar.Routes())
 	r.Mount("/clients", cr.Routes())
@@ -40,6 +42,7 @@ func New() http.Handler {
 	r.Mount("/payments", pr.Routes())
 	r.Mount("/trucks", tr.Routes())
 	r.Mount("/invoices", ic.Routes())
+	r.Mount("/deliveries", dc.Routes())
 
 	return r
 }

@@ -13,11 +13,11 @@ import (
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type ClientRouter struct {
+type ClientController struct {
 	Repository *client.Repository
 }
 
-func (cr *ClientRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (cr *ClientController) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	clients, err := cr.Repository.GetAll(ctx)
@@ -28,7 +28,7 @@ func (cr *ClientRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"clients": clients})
 }
 
-func (cr *ClientRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (cr *ClientController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -46,7 +46,7 @@ func (cr *ClientRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"client": ac})
 }
 
-func (cr *ClientRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
+func (cr *ClientController) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var c client.Client
 	err := json.NewDecoder(r.Body).Decode(&c)
 	if err != nil {
@@ -64,7 +64,7 @@ func (cr *ClientRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusCreated, response.Map{"client": c})
 }
 
-func (cr *ClientRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (cr *ClientController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -89,7 +89,7 @@ func (cr *ClientRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (cr *ClientRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (cr *ClientController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -107,7 +107,7 @@ func (cr *ClientRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (cr *ClientRouter) Routes() http.Handler {
+func (cr *ClientController) Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Post("/", cr.CreateHandler)

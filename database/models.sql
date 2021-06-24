@@ -20,8 +20,7 @@ create table if not exists invoice_lines (
     item_id int not null,
     invoice_id int not null,
     quantity numeric(18,3) not null,
-    amount numeric(18,3)  null,
-    total_amount numeric(18,3)  not null,
+    amount numeric(18,3) not null,
     created_at timestamp DEFAULT now(),
     updated_at timestamp NOT NULL,
     constraint pk_invoice_lines primary key(id)
@@ -32,6 +31,7 @@ create table if not exists invoices (
     payment_id int not null,
     client_id int null,
     total_amount numeric(18,3) not null,
+    discount_amount numeric(18,3) DEFAULT 0.00,
     created_at timestamp DEFAULT now(),
     updated_at timestamp NOT NULL,
     constraint pk_invoices primary key(id)
@@ -159,10 +159,8 @@ alter table invoice_lines add constraint fk_invoices_lines_invoices foreign key(
 alter table invoices drop constraint if exists fk_invoices_payments;
 alter table invoices drop constraint if exists fk_invoices_clients;
 alter table invoices add constraint fk_invoices_payments foreign key(payment_id) references payments(id);
-alter table invoices add constraint fk_invoices_clients foreign key(client_id) references clients(id);
+--alter table invoices add constraint fk_invoices_clients foreign key(client_id) references clients(id);
 
-alter table clients drop constraint if exists fk_clients_accounts;
-alter table clients add constraint fk_clients_accounts foreign key(account_id) references accounts(id);
 
 alter table deliveries_employees drop constraint if exists fk_deliveries_employees_deliveries;
 alter table deliveries_employees drop constraint if exists fk_deliveries_employees_employees;
@@ -179,7 +177,8 @@ alter table items_warehouses drop constraint if exists fk_items_warehouses_wareh
 alter table items_warehouses add constraint fk_items_warehouses_items foreign key(item_id) references items(id);
 alter table items_warehouses add constraint fk_items_warehouses_warehouses foreign key(warehouse_id) references warehouses(id);
 
-/*
-alter table accounts drop constraint if exists fk_accounts_clients;
-alter table accounts add constraint fk_accounts_clients foreign key(client_id) references clients(id)
- */
+-- alter table clients drop constraint if exists fk_clients_accounts;
+-- alter table clients add constraint fk_clients_accounts foreign key(account_id) references accounts(id);
+
+-- alter table accounts drop constraint if exists fk_accounts_clients;
+-- alter table accounts add constraint fk_accounts_clients foreign key(client_id) references clients(id)

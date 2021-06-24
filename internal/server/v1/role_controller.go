@@ -7,44 +7,44 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/lpiegas25/go_store/pkg/model/truck"
+	"github.com/lpiegas25/go_store/pkg/model/role"
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type TruckRouter struct {
-	Repository *truck.Repository
+type RoleController struct {
+	Repository *role.Repository
 }
 
-func (tr *TruckRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (rr *RoleController) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	trucks, err := tr.Repository.GetAll(ctx)
+	roles, err := rr.Repository.GetAll(ctx)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
-	response.JSON(w, r, http.StatusOK, response.Map{"trucks": trucks})
+	response.JSON(w, r, http.StatusOK, response.Map{"roles": roles})
 }
 
-func (tr *TruckRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	var truck truck.Truck
-	err := json.NewDecoder(r.Body).Decode(&truck)
+func (rr *RoleController) CreateHandler(w http.ResponseWriter, r *http.Request) {
+	var role role.Role
+	err := json.NewDecoder(r.Body).Decode(&role)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 	ctx := r.Context()
-	err = tr.Repository.Create(ctx, &truck)
+	err = rr.Repository.Create(ctx, &role)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), truck.ID))
-	response.JSON(w, r, http.StatusCreated, response.Map{"truck": truck})
+	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), role.ID))
+	response.JSON(w, r, http.StatusCreated, response.Map{"role": role})
 }
 
-func (tr *TruckRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (rr *RoleController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -53,16 +53,16 @@ func (tr *TruckRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := r.Context()
-	truck, err := tr.Repository.GetOne(ctx, uint(id))
+	role, err := rr.Repository.GetOne(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
 
-	response.JSON(w, r, http.StatusOK, response.Map{"truck": truck})
+	response.JSON(w, r, http.StatusOK, response.Map{"role": role})
 }
 
-func (tr *TruckRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (rr *RoleController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -70,8 +70,8 @@ func (tr *TruckRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	var truck truck.Truck
-	err = json.NewDecoder(r.Body).Decode(&truck)
+	var role role.Role
+	err = json.NewDecoder(r.Body).Decode(&role)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
@@ -79,7 +79,7 @@ func (tr *TruckRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	err = tr.Repository.Update(ctx, uint(id), truck)
+	err = rr.Repository.Update(ctx, uint(id), role)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -87,7 +87,7 @@ func (tr *TruckRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (tr *TruckRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (rr *RoleController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -97,7 +97,7 @@ func (tr *TruckRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	err = tr.Repository.Delete(ctx, uint(id))
+	err = rr.Repository.Delete(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -105,14 +105,14 @@ func (tr *TruckRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (tr *TruckRouter) Routes() http.Handler {
+func (rr *RoleController) Routes() http.Handler {
 	r := chi.NewRouter()
 
-	r.Post("/", tr.CreateHandler)
-	r.Get("/{id}", tr.GetOneHandler)
-	r.Put("/{id}", tr.UpdateHandler)
-	r.Delete("/{id}", tr.DeleteHandler)
-	r.Get("/", tr.GetAllHandler)
+	r.Post("/", rr.CreateHandler)
+	r.Get("/{id}", rr.GetOneHandler)
+	r.Put("/{id}", rr.UpdateHandler)
+	r.Delete("/{id}", rr.DeleteHandler)
+	r.Get("/", rr.GetAllHandler)
 
 	return r
 }

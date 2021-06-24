@@ -11,11 +11,11 @@ import (
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type PaymentRouter struct {
+type PaymentController struct {
 	Repository *payment.Repository
 }
 
-func (pr *PaymentRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentController) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	payments, err := pr.Repository.GetAll(ctx)
@@ -26,7 +26,7 @@ func (pr *PaymentRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"payments": payments})
 }
 
-func (pr *PaymentRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentController) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var payment payment.Payment
 	err := json.NewDecoder(r.Body).Decode(&payment)
 	if err != nil {
@@ -44,7 +44,7 @@ func (pr *PaymentRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusCreated, response.Map{"payment": payment})
 }
 
-func (pr *PaymentRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -62,7 +62,7 @@ func (pr *PaymentRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"payment": payment})
 }
 
-func (pr *PaymentRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -87,7 +87,7 @@ func (pr *PaymentRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (pr *PaymentRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (pr *PaymentController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -105,7 +105,7 @@ func (pr *PaymentRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (pr *PaymentRouter) Routes() http.Handler {
+func (pr *PaymentController) Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Post("/", pr.CreateHandler)

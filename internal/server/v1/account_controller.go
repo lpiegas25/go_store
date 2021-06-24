@@ -11,11 +11,11 @@ import (
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type AccountRouter struct {
+type AccountController struct {
 	Repository *account.Repository
 }
 
-func (ar *AccountRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
+func (ar *AccountController) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	var a account.Account
 	err := json.NewDecoder(r.Body).Decode(&a)
 	if err != nil {
@@ -33,7 +33,7 @@ func (ar *AccountRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusCreated, response.Map{"account": a})
 }
 
-func (ar *AccountRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (ar *AccountController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -51,7 +51,7 @@ func (ar *AccountRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{"account": ac})
 }
 
-func (ar *AccountRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (ar *AccountController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -76,7 +76,7 @@ func (ar *AccountRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (ar *AccountRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (ar *AccountController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -94,7 +94,7 @@ func (ar *AccountRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (ar *AccountRouter) Routes() http.Handler {
+func (ar *AccountController) Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Post("/", ar.CreateHandler)

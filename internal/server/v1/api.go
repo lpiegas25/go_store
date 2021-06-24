@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/lpiegas25/go_store/pkg/model/invoice"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -22,13 +23,14 @@ func New() http.Handler {
 		AllowedOrigins: []string{"https://*", "http://*"},
 	}))
 
-	ar := &AccountRouter{Repository: &account.Repository{Data: data.New()}}
-	cr := &ClientRouter{Repository: &client.Repository{Data: data.New()}}
-	rr := &RoleRouter{Repository: &role.Repository{Data: data.New()}}
-	wr := &WarehouseRouter{Repository: &warehouse.Repository{Data: data.New()}}
-	er := &EmployeeRouter{Repository: &employee.Repository{Data: data.New()}}
-	pr := &PaymentRouter{Repository: &payment.Repository{Data: data.New()}}
-	tr := &TruckRouter{Repository: &truck.Repository{Data: data.New()}}
+	ar := &AccountController{Repository: &account.Repository{Data: data.New()}}
+	cr := &ClientController{Repository: &client.Repository{Data: data.New()}}
+	rr := &RoleController{Repository: &role.Repository{Data: data.New()}}
+	wr := &WarehouseController{Repository: &warehouse.Repository{Data: data.New()}}
+	er := &EmployeeController{Repository: &employee.Repository{Data: data.New()}}
+	pr := &PaymentController{Repository: &payment.Repository{Data: data.New()}}
+	tr := &TruckController{Repository: &truck.Repository{Data: data.New()}}
+	ic := &InvoiceController{Repository: &invoice.Repository{Data: data.New()}}
 
 	r.Mount("/accounts", ar.Routes())
 	r.Mount("/clients", cr.Routes())
@@ -37,6 +39,7 @@ func New() http.Handler {
 	r.Mount("/employees", er.Routes())
 	r.Mount("/payments", pr.Routes())
 	r.Mount("/trucks", tr.Routes())
+	r.Mount("/invoices", ic.Routes())
 
 	return r
 }

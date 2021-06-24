@@ -7,44 +7,44 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/lpiegas25/go_store/pkg/model/employee"
+	"github.com/lpiegas25/go_store/pkg/model/warehouse"
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type EmployeeRouter struct {
-	Repository *employee.Repository
+type WarehouseController struct {
+	Repository *warehouse.Repository
 }
 
-func (er *EmployeeRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (wr *WarehouseController) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	employees, err := er.Repository.GetAll(ctx)
+	warehouses, err := wr.Repository.GetAll(ctx)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
-	response.JSON(w, r, http.StatusOK, response.Map{"employees": employees})
+	response.JSON(w, r, http.StatusOK, response.Map{"warehouses": warehouses})
 }
 
-func (er *EmployeeRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	var e employee.Employee
-	err := json.NewDecoder(r.Body).Decode(&e)
+func (wr *WarehouseController) CreateHandler(w http.ResponseWriter, r *http.Request) {
+	var warehouse warehouse.Warehouse
+	err := json.NewDecoder(r.Body).Decode(&warehouse)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 	ctx := r.Context()
-	err = er.Repository.Create(ctx, &e)
+	err = wr.Repository.Create(ctx, &warehouse)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), e.ID))
-	response.JSON(w, r, http.StatusCreated, response.Map{"employee": e})
+	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), warehouse.ID))
+	response.JSON(w, r, http.StatusCreated, response.Map{"warehouse": warehouse})
 }
 
-func (er *EmployeeRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (wr *WarehouseController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -53,16 +53,16 @@ func (er *EmployeeRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	ctx := r.Context()
-	e, err := er.Repository.GetOne(ctx, uint(id))
+	warehouse, err := wr.Repository.GetOne(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
 
-	response.JSON(w, r, http.StatusOK, response.Map{"employee": e})
+	response.JSON(w, r, http.StatusOK, response.Map{"warehouse": warehouse})
 }
 
-func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (wr *WarehouseController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -70,8 +70,8 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	var e employee.Employee
-	err = json.NewDecoder(r.Body).Decode(&e)
+	var warehouse warehouse.Warehouse
+	err = json.NewDecoder(r.Body).Decode(&warehouse)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
@@ -79,7 +79,7 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	err = er.Repository.Update(ctx, uint(id), e)
+	err = wr.Repository.Update(ctx, uint(id), warehouse)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -87,7 +87,7 @@ func (er *EmployeeRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) 
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (wr *WarehouseController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -97,7 +97,7 @@ func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	ctx := r.Context()
-	err = er.Repository.Delete(ctx, uint(id))
+	err = wr.Repository.Delete(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -105,14 +105,14 @@ func (er *EmployeeRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) 
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (er *EmployeeRouter) Routes() http.Handler {
+func (wr *WarehouseController) Routes() http.Handler {
 	r := chi.NewRouter()
 
-	r.Post("/", er.CreateHandler)
-	r.Get("/{id}", er.GetOneHandler)
-	r.Get("/", er.GetAllHandler)
-	r.Put("/{id}", er.UpdateHandler)
-	r.Delete("/{id}", er.DeleteHandler)
+	r.Post("/", wr.CreateHandler)
+	r.Get("/{id}", wr.GetOneHandler)
+	r.Put("/{id}", wr.UpdateHandler)
+	r.Delete("/{id}", wr.DeleteHandler)
+	r.Get("/", wr.GetAllHandler)
 
 	return r
 }

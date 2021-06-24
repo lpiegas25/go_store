@@ -7,44 +7,44 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/lpiegas25/go_store/pkg/model/role"
+	"github.com/lpiegas25/go_store/pkg/model/employee"
 	"github.com/lpiegas25/go_store/pkg/response"
 )
 
-type RoleRouter struct {
-	Repository *role.Repository
+type EmployeeController struct {
+	Repository *employee.Repository
 }
 
-func (rr *RoleRouter) GetAllHandler(w http.ResponseWriter, r *http.Request) {
+func (er *EmployeeController) GetAllHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	roles, err := rr.Repository.GetAll(ctx)
+	employees, err := er.Repository.GetAll(ctx)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
-	response.JSON(w, r, http.StatusOK, response.Map{"roles": roles})
+	response.JSON(w, r, http.StatusOK, response.Map{"employees": employees})
 }
 
-func (rr *RoleRouter) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	var role role.Role
-	err := json.NewDecoder(r.Body).Decode(&role)
+func (er *EmployeeController) CreateHandler(w http.ResponseWriter, r *http.Request) {
+	var e employee.Employee
+	err := json.NewDecoder(r.Body).Decode(&e)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 	ctx := r.Context()
-	err = rr.Repository.Create(ctx, &role)
+	err = er.Repository.Create(ctx, &e)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), role.ID))
-	response.JSON(w, r, http.StatusCreated, response.Map{"role": role})
+	w.Header().Add("Location", fmt.Sprintf("%s%d", r.URL.String(), e.ID))
+	response.JSON(w, r, http.StatusCreated, response.Map{"employee": e})
 }
 
-func (rr *RoleRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
+func (er *EmployeeController) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -53,16 +53,16 @@ func (rr *RoleRouter) GetOneHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ctx := r.Context()
-	role, err := rr.Repository.GetOne(ctx, uint(id))
+	e, err := er.Repository.GetOne(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
 	}
 
-	response.JSON(w, r, http.StatusOK, response.Map{"role": role})
+	response.JSON(w, r, http.StatusOK, response.Map{"employee": e})
 }
 
-func (rr *RoleRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+func (er *EmployeeController) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -70,8 +70,8 @@ func (rr *RoleRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
-	var role role.Role
-	err = json.NewDecoder(r.Body).Decode(&role)
+	var e employee.Employee
+	err = json.NewDecoder(r.Body).Decode(&e)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusBadRequest, err.Error())
 		return
@@ -79,7 +79,7 @@ func (rr *RoleRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	ctx := r.Context()
-	err = rr.Repository.Update(ctx, uint(id), role)
+	err = er.Repository.Update(ctx, uint(id), e)
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -87,7 +87,7 @@ func (rr *RoleRouter) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, nil)
 }
 
-func (rr *RoleRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func (er *EmployeeController) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 
 	id, err := strconv.Atoi(idStr)
@@ -97,7 +97,7 @@ func (rr *RoleRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	err = rr.Repository.Delete(ctx, uint(id))
+	err = er.Repository.Delete(ctx, uint(id))
 	if err != nil {
 		response.HTTPError(w, r, http.StatusNotFound, err.Error())
 		return
@@ -105,14 +105,14 @@ func (rr *RoleRouter) DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, r, http.StatusOK, response.Map{})
 }
 
-func (rr *RoleRouter) Routes() http.Handler {
+func (er *EmployeeController) Routes() http.Handler {
 	r := chi.NewRouter()
 
-	r.Post("/", rr.CreateHandler)
-	r.Get("/{id}", rr.GetOneHandler)
-	r.Put("/{id}", rr.UpdateHandler)
-	r.Delete("/{id}", rr.DeleteHandler)
-	r.Get("/", rr.GetAllHandler)
+	r.Post("/", er.CreateHandler)
+	r.Get("/{id}", er.GetOneHandler)
+	r.Get("/", er.GetAllHandler)
+	r.Put("/{id}", er.UpdateHandler)
+	r.Delete("/{id}", er.DeleteHandler)
 
 	return r
 }
